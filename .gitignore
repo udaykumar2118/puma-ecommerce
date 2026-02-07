@@ -1,0 +1,22 @@
+# Node
+node_modules/
+dist/
+build/
+
+# React
+.vite/
+.env
+
+# Java / Spring Boot
+target/
+*.log
+*.class
+
+# IDE
+.vscode/
+.metadata/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

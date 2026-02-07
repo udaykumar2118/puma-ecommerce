@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Better tap experience (mobile) */
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Hide scrollbars (used for carousels) */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.input{
+  width:100%;
+  padding:10px;
+  border-radius:8px;
+  background:#1f2937;
+  outline:none;
+}
+*{
+  font-family: 'Poppins', sans-serif;
+}
+
+body{
+  background:#f7f7f7;
+}
+.input{
+  @apply border p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-black;
+}
