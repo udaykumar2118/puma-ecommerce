@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: puma-backend
+    env: docker
+    rootDir: puma-backend
+    dockerfilePath: Dockerfile
+    plan: free
