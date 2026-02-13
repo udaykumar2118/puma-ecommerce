@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:9090",
+  baseURL: "https://puma-backend-oqw8.onrender.com",
 });
 
 // ⭐ Automatically attach JWT to every request
