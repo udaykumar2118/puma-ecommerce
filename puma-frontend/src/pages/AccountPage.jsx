@@ -12,7 +12,7 @@ export default function AccountPage() {
 
   // 🔐 GET PROFILE (JWT)
   useEffect(() => {
-    api.get("/auth/me")
+    api.get("/api/auth/me")
       .then(res => {
         setUser(res.data);
         setLoading(false);
@@ -30,7 +30,7 @@ export default function AccountPage() {
     e.preventDefault();
 
     try {
-      await api.put("/auth/update", user);
+      await api.put("/api/auth/update", user);
       alert("Profile updated successfully ✅");
       localStorage.setItem("userName", user.name);
       window.location.reload();

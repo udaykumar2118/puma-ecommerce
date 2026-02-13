@@ -41,10 +41,10 @@ export default function AdminDashboard() {
   const loadStats = async () => {
     const [ordersRes, revenueRes, pendingRes, deliveredRes] =
       await Promise.all([
-        api.get("/admin/dashboard/total-orders"),
-        api.get("/admin/dashboard/total-revenue"),
-        api.get("/admin/dashboard/orders/status?status=PENDING"),
-        api.get("/admin/dashboard/orders/status?status=DELIVERED"),
+        api.get("/api/admin/dashboard/total-orders"),
+        api.get("/api/admin/dashboard/total-revenue"),
+        api.get("/api/admin/dashboard/orders/status?status=PENDING"),
+        api.get("/api/admin/dashboard/orders/status?status=DELIVERED"),
       ]);
 
     setStats({
@@ -62,8 +62,8 @@ export default function AdminDashboard() {
     for (let m = 1; m <= 12; m++) {
       requests.push(
         Promise.all([
-          api.get(`/admin/dashboard/revenue/monthly?year=${year}&month=${m}`),
-          api.get(`/admin/dashboard/orders/monthly?year=${year}&month=${m}`)
+          api.get(`/api/admin/dashboard/revenue/monthly?year=${year}&month=${m}`),
+          api.get(`/api/admin/dashboard/orders/monthly?year=${year}&month=${m}`)
         ])
       );
     }

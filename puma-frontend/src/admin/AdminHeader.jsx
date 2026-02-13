@@ -8,7 +8,7 @@ export default function AdminHeader() {
     if (!window.confirm("Logout from admin panel?")) return;
 
     localStorage.clear();
-    navigate("/admin/login");
+    navigate("/api/admin/login");
   };
 
   return (

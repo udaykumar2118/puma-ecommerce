@@ -7,7 +7,7 @@ export default function TopPicksSlider() {
   const sliderRef = useRef();
 
   useEffect(() => {
-    api.get("/products")
+    api.get("/api/products")
       .then(res => setProducts(res.data))
       .catch(console.error);
   }, []);
@@ -27,7 +27,7 @@ export default function TopPicksSlider() {
     return;
   }
 
-  await api.post(`/cart/add?productId=${productId}&qty=1`);
+  await api.post(`/api/cart/add?productId=${productId}&qty=1`);
   window.dispatchEvent(new Event("cartUpdated"));
   alert("Added to cart 🛒");
 };

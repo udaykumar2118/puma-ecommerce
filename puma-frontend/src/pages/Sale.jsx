@@ -7,7 +7,7 @@ export default function Sale() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api.get("/products")
+    api.get("/api/products")
       .then(res => {
         // 🔥 SALE LOGIC (price <= 6000)
         const filtered = res.data.filter(p => p.price <= 6000);
