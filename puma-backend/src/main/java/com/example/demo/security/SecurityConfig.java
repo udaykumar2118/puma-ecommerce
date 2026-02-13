@@ -60,7 +60,8 @@ public class SecurityConfig {
                     .requestMatchers("/").permitAll()
                     .requestMatchers("/api/auth/**").permitAll()
                     .requestMatchers("/api/products/**").permitAll()
-                    .requestMatchers("/api/payment/**").permitAll()
+                    .requestMatchers("/api/categories/**").permitAll()  // ⭐ ADD THIS
+                    .requestMatchers("/api/payment/**").permitAll()equestMatchers("/api/payment/**").permitAll()
 
                     // Swagger if exists
                     .requestMatchers("/v3/api-docs/**","/swagger-ui/**").permitAll()
