@@ -7,12 +7,7 @@ export default function Cart() {
   const navigate = useNavigate();
   const [cart, setCart] = useState(null);
 
-  const token = localStorage.getItem("token");
-
-  const authHeader = {
-    headers: { Authorization: `Bearer ${token}` }
-  };
-
+  
   // ================= LOAD CART =================
   const loadCart = () => {
     if (!token) return;
