@@ -56,19 +56,22 @@ public class SecurityConfig {
                     session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
             .authorizeHttpRequests(auth -> auth
-                    // Public APIs
-                    .requestMatchers("/").permitAll()
-                    .requestMatchers("/api/auth/**").permitAll()
-                    .requestMatchers("/api/products/**").permitAll()
-                    .requestMatchers("/api/categories/**").permitAll()  // ⭐ ADD THIS
-                    .requestMatchers("/api/payment/**").permitAll()equestMatchers("/api/payment/**").permitAll()
 
-                    // Swagger if exists
-                    .requestMatchers("/v3/api-docs/**","/swagger-ui/**").permitAll()
+    // PUBLIC APIs (no login needed)
+    .requestMatchers("/").permitAll()
+    .requestMatchers("/api/auth/**").permitAll()
+    .requestMatchers("/api/products/**").permitAll()
+    .requestMatchers("/api/categories/**").permitAll()
 
-                    // Everything else needs login
-                    .anyRequest().authenticated()
-            )
+    // Payment order creation needs login later, keep public for now
+    .requestMatchers("/api/payment/**").permitAll()
+
+    // Swagger (optional)
+    .requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll()
+
+    // EVERYTHING ELSE requires JWT
+    .anyRequest().authenticated()
+)
 
             // JWT Filter
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
