@@ -36,13 +36,13 @@ public class SecurityConfig {
 
         http
             .cors(cors -> cors.configurationSource(request -> {
-                CorsConfiguration config = new CorsConfiguration();
-                config.setAllowCredentials(true);
-                config.setAllowedOrigins(List.of("*"));
-                config.setAllowedHeaders(List.of("Authorization","Content-Type","Accept","Origin"));
-                config.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
-                return config;
-            }))
+    CorsConfiguration config = new CorsConfiguration();
+    config.setAllowCredentials(true);
+    config.setAllowedOriginPatterns(List.of("*"));
+    config.setAllowedHeaders(List.of("*"));
+    config.setAllowedMethods(List.of("*"));
+    return config;
+}))
 
             .csrf(csrf -> csrf.disable())
 
