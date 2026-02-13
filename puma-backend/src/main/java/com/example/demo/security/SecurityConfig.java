@@ -50,23 +50,17 @@ public class SecurityConfig {
                     session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
             .authorizeHttpRequests(auth -> auth
-                // PUBLIC APIs
-                .requestMatchers("/api/auth/**","/api/products/**").permitAll()
-                .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
+                    // Public APIs
+                    .requestMatchers("/").permitAll()
+                    .requestMatchers("/api/auth/**").permitAll()
+                    .requestMatchers("/api/products/**").permitAll()
+                    .requestMatchers("/api/payment/**").permitAll()
 
-                // USER + ADMIN APIs
-                .requestMatchers(
-                        "/api/cart/**",
-                        "/api/orders/**",
-                        "/api/payments/**",
-                        "/api/wishlist/**",
-                        "/api/invoice/**"
-                ).hasAnyRole("USER","ADMIN")
+                    // Swagger if exists
+                    .requestMatchers("/v3/api-docs/**","/swagger-ui/**").permitAll()
 
-                // ADMIN APIs
-                .requestMatchers("/api/admin/**").hasRole("ADMIN")
-
-                .anyRequest().authenticated()
+                    // Everything else needs login
+                    .anyRequest().authenticated()
             )
 
             // JWT Filter
