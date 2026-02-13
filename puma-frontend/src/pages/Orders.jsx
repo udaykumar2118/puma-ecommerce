@@ -75,33 +75,33 @@ export default function Orders() {
 
   // ================= DOWNLOAD INVOICE =================
   const downloadInvoice = async (orderId) => {
-    try {
-      const res = await fetch(
-        `http://localhost:9090/api/invoice/download/${orderId}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
+  try {
+    const res = await fetch(
+      `https://puma-backend-oqw8.onrender.com/api/invoice/download/${orderId}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`
         }
-      );
+      }
+    );
 
-      if (!res.ok) throw new Error("Invoice not ready");
+    if (!res.ok) throw new Error("Invoice not ready");
 
-      const blob = await res.blob();
-      const url = window.URL.createObjectURL(blob);
+    const blob = await res.blob();
+    const url = window.URL.createObjectURL(blob);
 
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `invoice_${orderId}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `invoice_${orderId}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
 
-    } catch {
-      alert("Invoice not available yet");
-    }
-  };
+  } catch {
+    alert("Invoice not available yet");
+  }
+};
 
   // ================= STATUS COLOR =================
   const statusColor = (status) => {

@@ -7,7 +7,13 @@ export default function Cart() {
   const navigate = useNavigate();
   const [cart, setCart] = useState(null);
 
-  
+  // ⭐ IMPORTANT — GET TOKEN AGAIN
+  const token = localStorage.getItem("token");
+
+  const authHeader = {
+    headers: { Authorization: `Bearer ${token}` }
+  };
+
   // ================= LOAD CART =================
   const loadCart = () => {
     if (!token) return;
@@ -40,14 +46,14 @@ export default function Cart() {
     window.dispatchEvent(new Event("cartUpdated"));
   };
 
+  // ================= UI =================
+
   if (!token)
     return (
       <div className="min-h-screen flex flex-col gap-6 items-center justify-center">
         <h1 className="text-3xl font-bold">Login to view cart 🛒</h1>
-        <button
-          onClick={() => navigate("/login")}
-          className="bg-black text-white px-6 py-3 rounded"
-        >
+        <button onClick={() => navigate("/login")}
+          className="bg-black text-white px-6 py-3 rounded">
           LOGIN
         </button>
       </div>
@@ -64,10 +70,8 @@ export default function Cart() {
     return (
       <div className="min-h-screen flex flex-col gap-6 items-center justify-center">
         <h1 className="text-3xl font-bold">Your cart is empty 🛒</h1>
-        <button
-          onClick={() => navigate("/")}
-          className="bg-black text-white px-8 py-3"
-        >
+        <button onClick={() => navigate("/")}
+          className="bg-black text-white px-8 py-3">
           START SHOPPING
         </button>
       </div>
@@ -88,10 +92,8 @@ export default function Cart() {
               <div key={item.id}
                 className="bg-white rounded-2xl shadow-lg p-6 flex gap-6 items-center">
 
-                <div className="bg-gray-100 p-4 rounded-xl">
-                  <img src={image} alt={p.name}
-                    className="w-32 h-32 object-contain"/>
-                </div>
+                <img src={image} alt={p.name}
+                     className="w-32 h-32 object-contain bg-gray-100 p-4 rounded-xl"/>
 
                 <div className="flex-1">
                   <h3 className="text-xl font-bold">{p.name}</h3>
@@ -101,9 +103,8 @@ export default function Cart() {
                     <button onClick={() => decreaseQty(item.id)}>−</button>
                     <span>{item.quantity}</span>
                     <button onClick={() => increaseQty(item.id)}>+</button>
-
                     <button onClick={() => removeItem(item.id)}
-                      className="text-red-500">Remove</button>
+                            className="text-red-500">Remove</button>
                   </div>
                 </div>
 
@@ -118,12 +119,12 @@ export default function Cart() {
         <div className="bg-white rounded-2xl shadow-xl p-8 h-fit">
           <h2 className="text-2xl font-bold mb-6">Total ₹{cart.totalAmount}</h2>
 
-          <button
-            onClick={() => navigate("/checkout")}
+          <button onClick={() => navigate("/checkout")}
             className="w-full bg-black text-white py-4 rounded-xl">
             Proceed to Checkout →
           </button>
         </div>
+
       </div>
     </div>
   );
