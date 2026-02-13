@@ -24,56 +24,43 @@ public class SecurityConfig {
 
     // 🔐 Connect DB users to Spring Security
     @Bean
-    public DaoAuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder);
-        return authProvider;
-    }
-
-    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
-        .cors(cors -> cors.configurationSource(request -> {
-            CorsConfiguration config = new CorsConfiguration();
-
-            config.setAllowCredentials(true);
-
-            config.setAllowedOrigins(List.of(
-                    "http://localhost:5173",
-                    "https://puma-ecommerce.vercel.app"
-            ));
-
-            config.setAllowedHeaders(List.of("*"));
-            config.setAllowedMethods(List.of("*"));
-
-            return config;
-        }))
+            .cors(cors -> cors.configurationSource(request -> {
+                CorsConfiguration config = new CorsConfiguration();
+                config.setAllowCredentials(true);
+                config.setAllowedOrigins(List.of(
+                        "http://localhost:5173",
+                        "https://puma-ecommerce.vercel.app"
+                ));
+                config.setAllowedHeaders(List.of("*"));
+                config.setAllowedMethods(List.of("*"));
+                return config;
+            }))
             .csrf(csrf -> csrf.disable())
-
             .sessionManagement(session ->
                     session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
             .authorizeHttpRequests(auth -> auth
 
-    // PUBLIC APIs (no login needed)
-    .requestMatchers("/").permitAll()
-    .requestMatchers("/api/auth/**").permitAll()
-    .requestMatchers("/api/products/**").permitAll()
-    .requestMatchers("/api/categories/**").permitAll()
+                // 🌍 PUBLIC APIs
+                .requestMatchers("/", "/api/auth/**").permitAll()
+                .requestMatchers("/api/products/**").permitAll()
+                .requestMatchers("/api/categories/**").permitAll()
+                .requestMatchers("/api/payment/**").permitAll()
 
-    // Payment order creation needs login later, keep public for now
-    .requestMatchers("/api/payment/**").permitAll()
+                // 🔐 USER APIs (LOGIN REQUIRED)
+                .requestMatchers("/api/cart/**").authenticated()
+                .requestMatchers("/api/wishlist/**").authenticated()
+                .requestMatchers("/api/orders/**").authenticated()
 
-    // Swagger (optional)
-    .requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll()
+                // swagger
+                .requestMatchers("/v3/api-docs/**","/swagger-ui/**").permitAll()
 
-    // EVERYTHING ELSE requires JWT
-    .anyRequest().authenticated()
-)
+                .anyRequest().authenticated()
+            )
 
-            // JWT Filter
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
