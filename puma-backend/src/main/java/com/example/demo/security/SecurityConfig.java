@@ -35,15 +35,21 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
-            .cors(cors -> cors.configurationSource(request -> {
-    CorsConfiguration config = new CorsConfiguration();
-    config.setAllowCredentials(true);
-    config.setAllowedOriginPatterns(List.of("*"));
-    config.setAllowedHeaders(List.of("*"));
-    config.setAllowedMethods(List.of("*"));
-    return config;
-}))
+        .cors(cors -> cors.configurationSource(request -> {
+            CorsConfiguration config = new CorsConfiguration();
 
+            config.setAllowCredentials(true);
+
+            config.setAllowedOrigins(List.of(
+                    "http://localhost:5173",
+                    "https://puma-ecommerce.vercel.app"
+            ));
+
+            config.setAllowedHeaders(List.of("*"));
+            config.setAllowedMethods(List.of("*"));
+
+            return config;
+        }))
             .csrf(csrf -> csrf.disable())
 
             .sessionManagement(session ->
