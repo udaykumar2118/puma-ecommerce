@@ -29,9 +29,7 @@ public class OrderService {
         this.userRepo = userRepo;
     }
 
-    // ======================================================
-    // 🛒 PLACE ORDER WITH SHIPPING DETAILS
-    // ======================================================
+    // PLACE ORDER WITH SHIPPING DETAILS
     public Order placeOrder(Long userId, CheckoutRequest req) {
 
         User user = userRepo.findById(userId)
@@ -54,7 +52,6 @@ public class OrderService {
         order.setTotalAmount(total);
         order.setStatus(OrderStatus.PENDING);
 
-        // ⭐ shipping details
         order.setFirstName(req.firstName);
         order.setLastName(req.lastName);
         order.setEmail(req.email);
@@ -79,16 +76,12 @@ public class OrderService {
         return order;
     }
 
-    // ======================================================
-    // 📦 USER ORDERS
-    // ======================================================
+    // USER ORDERS
     public List<Order> getOrdersByUser(Long userId) {
         return orderRepo.findByUserId(userId);
     }
 
-    // ======================================================
-    // ❌ CANCEL ORDER
-    // ======================================================
+    // CANCEL ORDER
     public void cancelOrder(Long orderId) {
 
         Order order = orderRepo.findById(orderId)
@@ -101,10 +94,7 @@ public class OrderService {
         orderRepo.save(order);
     }
 
-    // ======================================================
-    // 👑 ADMIN FEATURES
-    // ======================================================
-
+    // ADMIN FEATURES
     public List<Order> getAllOrders() {
         return orderRepo.findAll();
     }
@@ -132,10 +122,7 @@ public class OrderService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    // ======================================================
-    // 📊 ANALYTICS
-    // ======================================================
-
+    // ANALYTICS
     public BigDecimal getMonthlyRevenue(int year, int month) {
         LocalDateTime start = LocalDate.of(year, month, 1).atStartOfDay();
         LocalDateTime end =

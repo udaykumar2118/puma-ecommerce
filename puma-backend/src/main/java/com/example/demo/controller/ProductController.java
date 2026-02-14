@@ -22,7 +22,7 @@ public class ProductController {
         this.categoryService = categoryService;
     }
 
-    // ===== CATEGORY APIs =====
+    // CATEGORY APIs
 
     @PostMapping("/categories")
     public Category addCategory(@RequestBody Category category) {
@@ -34,7 +34,7 @@ public class ProductController {
         return categoryService.getAllCategories();
     }
 
-    // ===== PRODUCT APIs =====
+    // PRODUCT APIs 
 
     @PostMapping
     public Product addProduct(@RequestBody Product product) {
@@ -45,7 +45,7 @@ public class ProductController {
     public List<Product> getAllProducts() {
         return productService.getAllProducts();
     }
- // ✅ GET SINGLE PRODUCT (DETAILS PAGE)
+ // GET SINGLE PRODUCT (DETAILS PAGE)
     @GetMapping("/{id}")
     public Product getProductById(@PathVariable Long id) {
         return productService.getProductById(id);

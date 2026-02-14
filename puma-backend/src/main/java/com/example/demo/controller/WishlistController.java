@@ -20,7 +20,7 @@ public class WishlistController {
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
 
-    // ================= ADD TO WISHLIST (JWT) =================
+    // ADD TO WISHLIST (JWT)
     @PostMapping("/add")
     public void add(
             @RequestHeader("Authorization") String header,
@@ -35,7 +35,7 @@ public class WishlistController {
         wishlistService.add(user.getId(), productId);
     }
 
-    // ================= GET MY WISHLIST (JWT) =================
+    // GET MY WISHLIST (JWT)
     @GetMapping("/my")
     public List<Wishlist> getMyWishlist(
             @RequestHeader("Authorization") String header) {
@@ -49,7 +49,7 @@ public class WishlistController {
         return wishlistService.getUserWishlist(user.getId());
     }
 
-    // ================= REMOVE FROM WISHLIST (JWT) =================
+    // REMOVE FROM WISHLIST (JWT)
     @DeleteMapping("/remove")
     public void remove(
             @RequestHeader("Authorization") String header,

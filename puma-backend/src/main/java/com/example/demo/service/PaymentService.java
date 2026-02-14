@@ -20,9 +20,7 @@ public class PaymentService {
         this.invoiceService = invoiceService;
     }
 
-    // ======================================================
-    // 💳 VERIFY RAZORPAY PAYMENT
-    // ======================================================
+    // VERIFY RAZORPAY PAYMENT
     public Payment verifyRazorpayPayment(Long orderId,
                                          String razorpayOrderId,
                                          String razorpayPaymentId,
@@ -41,19 +39,15 @@ public class PaymentService {
 
         paymentRepo.save(payment);
 
-        // ⭐ UPDATE ORDER STATUS
         order.setStatus(OrderStatus.PAID);
         orderRepo.save(order);
 
-        // ⭐ CREATE INVOICE
         invoiceService.createInvoice(orderId, "RAZORPAY");
 
         return payment;
     }
 
-    // ======================================================
-    // 💵 CASH ON DELIVERY
-    // ======================================================
+    // CASH ON DELIVERY
     public Payment confirmCOD(Long orderId) {
 
         Order order = orderRepo.findById(orderId)
@@ -69,7 +63,6 @@ public class PaymentService {
         order.setStatus(OrderStatus.PLACED);
         orderRepo.save(order);
 
-        // ⭐ CREATE INVOICE
         invoiceService.createInvoice(orderId, "COD");
 
         return payment;

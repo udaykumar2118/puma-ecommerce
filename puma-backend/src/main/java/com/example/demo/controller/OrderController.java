@@ -24,9 +24,7 @@ public class OrderController {
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
 
-    // ======================================================
-    // 🛒 PLACE ORDER WITH SHIPPING
-    // ======================================================
+    // PLACE ORDER WITH SHIPPING
     @PostMapping("/place")
     public Order placeOrder(
             @RequestHeader("Authorization") String header,
@@ -41,9 +39,7 @@ public class OrderController {
         return orderService.placeOrder(user.getId(), req);
     }
 
-    // ======================================================
-    // 📦 MY ORDERS
-    // ======================================================
+    // MY ORDERS
     @GetMapping("/my")
     public List<Order> getMyOrders(@RequestHeader("Authorization") String header) {
 
@@ -56,17 +52,13 @@ public class OrderController {
         return orderService.getOrdersByUser(user.getId());
     }
 
-    // ======================================================
-    // 📄 ORDER ITEMS
-    // ======================================================
+    // ORDER ITEMS
     @GetMapping("/{orderId}/items")
     public List<OrderItem> getOrderItems(@PathVariable Long orderId) {
         return orderItemRepo.findByOrderId(orderId);
     }
 
-    // ======================================================
-    // ❌ CANCEL ORDER
-    // ======================================================
+    // CANCEL ORDER
     @PutMapping("/{orderId}/cancel")
     public String cancelOrder(@PathVariable Long orderId) {
         orderService.cancelOrder(orderId);

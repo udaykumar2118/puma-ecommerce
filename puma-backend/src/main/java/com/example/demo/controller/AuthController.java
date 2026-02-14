@@ -19,7 +19,7 @@ public class AuthController {
     private final PasswordEncoder encoder;
     private final JwtUtil jwtUtil;
 
-    // ================= USER REGISTER =================
+    // USER REGISTER
     @PostMapping("/register")
     public LoginResponse register(@RequestBody RegisterRequest req) {
 
@@ -45,7 +45,7 @@ public class AuthController {
         );
     }
 
-    // ================= LOGIN (USER + ADMIN) =================
+    // LOGIN (USER + ADMIN)
     @PostMapping("/login")
     public LoginResponse login(@RequestBody LoginRequest req) {
 
@@ -59,14 +59,14 @@ public class AuthController {
 
         return new LoginResponse(
                 token,
-                user.getRole().name(), // 🔥 important for admin panel
+                user.getRole().name(), 
                 user.getId(),
                 user.getName(),
                 user.getEmail()
         );
     }
 
-    // ================= PROFILE =================
+    // PROFILE
     @GetMapping("/me")
     public User getProfile(@RequestHeader("Authorization") String header) {
 

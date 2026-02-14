@@ -20,9 +20,8 @@ public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
     private final CustomUserDetailsService userDetailsService;
-    private final PasswordEncoder passwordEncoder; // ⭐ use existing bean from PasswordConfig
+    private final PasswordEncoder passwordEncoder; 
 
-    // 🔐 Connect DB users to Spring Security
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 

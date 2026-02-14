@@ -19,7 +19,7 @@ public class CartController {
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
 
-    // ================= ADD TO CART (JWT) =================
+    // ADD TO CART (JWT)
     @PostMapping("/add")
     public ResponseEntity<CartItem> addToCart(
             @RequestHeader("Authorization") String header,
@@ -37,7 +37,7 @@ public class CartController {
         );
     }
 
-    // ================= GET MY CART (JWT) =================
+    //  GET MY CART (JWT) 
     @GetMapping("/my")
     public ResponseEntity<CartResponse> getMyCart(
             @RequestHeader("Authorization") String header
@@ -53,19 +53,19 @@ public class CartController {
         );
     }
 
-    // ================= INCREASE QTY =================
+    // INCREASE QTY 
     @PutMapping("/{cartId}/increase")
     public ResponseEntity<CartItem> increaseQty(@PathVariable Long cartId){
         return ResponseEntity.ok(cartService.increaseQty(cartId));
     }
 
-    // ================= DECREASE QTY =================
+    // DECREASE QTY 
     @PutMapping("/{cartId}/decrease")
     public ResponseEntity<CartItem> decreaseQty(@PathVariable Long cartId){
         return ResponseEntity.ok(cartService.decreaseQty(cartId));
     }
 
-    // ================= REMOVE ITEM =================
+    // REMOVE ITEM 
     @DeleteMapping("/{cartId}")
     public ResponseEntity<String> removeItem(@PathVariable Long cartId){
         cartService.removeItem(cartId);

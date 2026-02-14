@@ -13,28 +13,23 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
-    // 🟢 ADD PRODUCT (ADMIN)
     public Product addProduct(Product product) {
         return productRepository.save(product);
     }
 
-    // 🟢 GET ALL PRODUCTS
     public List<Product> getAllProducts() {
         return productRepository.findAll();
     }
 
-    // 🟢 GET PRODUCTS BY CATEGORY
     public List<Product> getProductsByCategory(Long categoryId) {
         return productRepository.findByCategoryId(categoryId);
     }
 
-    // 🟢 GET PRODUCT BY ID (used in product details + cart)
     public Product getProductById(Long id) {
         return productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
     }
 
-    // 🟢 UPDATE PRODUCT (ADMIN)
     public Product updateProduct(Long id, Product updatedProduct) {
         Product existing = getProductById(id);
 
@@ -49,7 +44,6 @@ public class ProductService {
         return productRepository.save(existing);
     }
 
-    // 🟢 DELETE PRODUCT (ADMIN)
     public void deleteProduct(Long id) {
         if (!productRepository.existsById(id)) {
             throw new RuntimeException("Product not found");

@@ -20,7 +20,7 @@ public class RazorpayService {
         RazorpayClient client = new RazorpayClient(keyId, keySecret);
 
         JSONObject options = new JSONObject();
-        options.put("amount", amount * 100); // ₹ → paise
+        options.put("amount", amount * 100); 
         options.put("currency", "INR");
         options.put("receipt", "order_rcpt_" + System.currentTimeMillis());
 

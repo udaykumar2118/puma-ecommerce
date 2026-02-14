@@ -26,9 +26,7 @@ public class PaymentController {
         this.orderRepo = orderRepo;
     }
 
-    // ====================================
-    // 🔥 CREATE RAZORPAY ORDER (FIXED)
-    // ====================================
+    // CREATE RAZORPAY ORDER
     @PostMapping("/create-razorpay-order")
     public Map<String, Object> createRazorpayOrder(@RequestParam Long orderId)
             throws Exception {
@@ -36,8 +34,8 @@ public class PaymentController {
         var dbOrder = orderRepo.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
 
-        // ⭐ FOR DEMO / TEST → charge ₹1 only
-        int amount = 100;   // 100 paise = ₹1
+        
+        int amount = 100;   
 
         var razorpayOrder = razorpayService.createOrder(amount);
 
@@ -51,9 +49,7 @@ public class PaymentController {
     }
 
 
-    // ====================================
-    // 🔐 VERIFY PAYMENT
-    // ====================================
+    // VERIFY PAYMENT
     @PostMapping("/verify")
     public Payment verifyPayment(@RequestBody RazorpayVerifyRequest req) {
         return paymentService.verifyRazorpayPayment(
@@ -64,9 +60,7 @@ public class PaymentController {
         );
     }
 
-    // ====================================
-    // 💵 COD PAYMENT
-    // ====================================
+    // COD PAYMENT
     @PostMapping("/cod")
     public Payment codPayment(@RequestParam Long orderId) {
         return paymentService.confirmCOD(orderId);

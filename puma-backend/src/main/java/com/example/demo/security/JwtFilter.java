@@ -32,7 +32,6 @@ public class JwtFilter extends OncePerRequestFilter {
 
             String header = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-            // If no token → just continue
             if (header == null || !header.startsWith("Bearer ")) {
                 filterChain.doFilter(request, response);
                 return;
@@ -40,14 +39,12 @@ public class JwtFilter extends OncePerRequestFilter {
 
             String token = header.substring(7);
 
-            // If token invalid → send 401 immediately
             if (!jwtUtil.validateToken(token)) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.getWriter().write("Invalid or Expired Token");
                 return;
             }
 
-            // Extract data
             String email = jwtUtil.extractEmail(token);
             String role = jwtUtil.extractRole(token);
 

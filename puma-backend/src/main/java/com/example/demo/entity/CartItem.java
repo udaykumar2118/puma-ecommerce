@@ -11,13 +11,11 @@ public class CartItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // ❌ stop infinite loop
     @ManyToOne
     @JoinColumn(name = "user_id")
     @JsonIgnore
     private User user;
 
-    // ✅ we want product details in cart response
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
