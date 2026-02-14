@@ -32,8 +32,7 @@ export default function AccountPage() {
     try {
       await api.put("/api/auth/update", user);
       alert("Profile updated successfully ✅");
-      localStorage.setItem("userName", user.name);
-      window.location.reload();
+localStorage.setItem("name", user.name);      window.location.reload();
     } catch (err) {
       alert("Update failed");
     }

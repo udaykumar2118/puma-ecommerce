@@ -27,7 +27,7 @@ export default function TopPicksSlider() {
     return;
   }
 
-  await api.post(`/api/cart/add?productId=${productId}&qty=1`);
+  await api.post(`/api/cart/add?productId=1&quantity=1`);
   window.dispatchEvent(new Event("cartUpdated"));
   alert("Added to cart 🛒");
 };
