@@ -73,7 +73,7 @@ export default function Checkout() {
       await api.post(
         `/api/payments/cod?orderId=${order.id}`,
         {},                 // body empty
-        authHeader          // ⭐ JWT HEADER
+        authHeader          
       );
 
       alert("Order placed successfully 🎉");
@@ -85,13 +85,13 @@ export default function Checkout() {
     const razorRes = await api.post(
       `/api/payments/create-razorpay-order?orderId=${order.id}`,
       {},                 // body empty
-      authHeader          // ⭐ JWT HEADER (VERY IMPORTANT)
+      authHeader          
     );
 
     const razor = razorRes.data;
 
     const options = {
-      key: "rzp_test_RQ3wpgsuiVglvR",
+      key: "rzp_test_SG5FYjV0Qs8air",
       amount: razor.amount,
       currency: razor.currency,
       order_id: razor.razorpayOrderId,
