@@ -5,6 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,43 +23,54 @@ public class JwtFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
 
     @Override
-    protected void doFilterInternal(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            FilterChain filterChain
-    ) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
+            throws ServletException, IOException {
 
-        String header = request.getHeader("Authorization");
+        try {
 
-        if (header != null && header.startsWith("Bearer ")) {
+            String header = request.getHeader(HttpHeaders.AUTHORIZATION);
+
+            // If no token → just continue
+            if (header == null || !header.startsWith("Bearer ")) {
+                filterChain.doFilter(request, response);
+                return;
+            }
 
             String token = header.substring(7);
 
-            if (jwtUtil.validateToken(token)) {
-
-                String email = jwtUtil.extractEmail(token);
-                String role = jwtUtil.extractRole(token);
-
-                // ⭐ VERY IMPORTANT
-                var authorities = List.of(
-                        new SimpleGrantedAuthority("ROLE_" + role)
-                );
-
-                UsernamePasswordAuthenticationToken auth =
-                        new UsernamePasswordAuthenticationToken(
-                                email,
-                                null,
-                                authorities
-                        );
-
-                auth.setDetails(
-                        new WebAuthenticationDetailsSource().buildDetails(request)
-                );
-
-                SecurityContextHolder.getContext().setAuthentication(auth);
+            // If token invalid → send 401 immediately
+            if (!jwtUtil.validateToken(token)) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Invalid or Expired Token");
+                return;
             }
-        }
 
-        filterChain.doFilter(request, response);
+            // Extract data
+            String email = jwtUtil.extractEmail(token);
+            String role = jwtUtil.extractRole(token);
+
+            var authorities = List.of(
+                    new SimpleGrantedAuthority("ROLE_" + role)
+            );
+
+            UsernamePasswordAuthenticationToken auth =
+                    new UsernamePasswordAuthenticationToken(
+                            email,
+                            null,
+                            authorities
+                    );
+
+            auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+            SecurityContextHolder.getContext().setAuthentication(auth);
+
+            filterChain.doFilter(request, response);
+
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("JWT Authentication Failed");
+        }
     }
 }
