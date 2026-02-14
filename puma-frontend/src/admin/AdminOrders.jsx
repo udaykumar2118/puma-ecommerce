@@ -14,7 +14,7 @@ export default function AdminOrders() {
 
   const loadOrders = async () => {
     try {
-      const res = await api.get("/admin/orders");
+      const res = await api.get("/api/admin/orders");
       setOrders(res.data);
     } catch (err) {
       console.error(err);
@@ -24,7 +24,7 @@ export default function AdminOrders() {
   // 🔄 UPDATE STATUS
   const updateStatus = async (id, status) => {
     try {
-      const res = await api.put(`/admin/orders/${id}/status?status=${status}`);
+      const res = await api.put(`/api/admin/orders/${id}/status?status=${status}`);
       setOrders(o => o.map(ord => ord.id === id ? res.data : ord));
     } catch (err) {
       console.error(err);

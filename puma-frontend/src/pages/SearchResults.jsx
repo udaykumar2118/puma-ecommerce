@@ -10,7 +10,7 @@ export default function SearchResults() {
   useEffect(() => {
     if (!query) return;
 
-    api.get("/products")
+    api.get("/api/products")
       .then(res => {
         const filtered = res.data.filter(p =>
           p.name.toLowerCase().includes(query.toLowerCase())

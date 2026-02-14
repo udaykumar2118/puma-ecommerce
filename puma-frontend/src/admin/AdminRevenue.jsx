@@ -31,7 +31,7 @@ export default function AdminRevenue() {
       const data = [];
       for (let m = 1; m <= 12; m++) {
         const res = await api.get(
-          `/admin/dashboard/revenue/monthly?year=${year}&month=${m}`
+          `/api/admin/dashboard/revenue/monthly?year=${year}&month=${m}`
         );
         data.push(res.data);
       }

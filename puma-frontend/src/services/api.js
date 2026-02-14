@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://puma-backend-oqw8.onrender.com",
+  baseURL: import.meta.env.VITE_API_URL,
 });
 
 // attach JWT automatically

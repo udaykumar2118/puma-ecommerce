@@ -12,8 +12,7 @@ export default function AdminGuard({ children }) {
 
   // not logged in → go admin login
   if (!token) {
-    return <Navigate to="/admin/login" replace />;
-  }
+return <Navigate to="/admin/login" replace />;  }
 
   // logged in but not admin → go home
   if (role !== "ADMIN") {

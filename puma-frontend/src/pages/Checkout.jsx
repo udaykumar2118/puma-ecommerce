@@ -114,7 +114,7 @@ export default function Checkout() {
             razorpay_payment_id: res.razorpay_payment_id,
             razorpay_signature: res.razorpay_signature,
           },
-          authHeader   // ⭐ JWT HEADER AGAIN
+          authHeader   
         );
 
         alert("Payment successful 🎉");

@@ -19,19 +19,27 @@ export default function Register() {
   const rightRef = useRef(null);
 
   // ================= REGISTER =================
-  const handleRegister = async () => {
-  try {
-    const res = await API.post("/api/auth/register", formData);
+const handleRegister = async (e) => {
+  e.preventDefault();
 
-    // ⭐ SAVE TOKEN
+  try {
+    const res = await api.post("/api/auth/register", {
+      name,
+      email,
+      password
+    });
+
     localStorage.setItem("token", res.data.token);
     localStorage.setItem("userId", res.data.userId);
     localStorage.setItem("role", res.data.role);
     localStorage.setItem("name", res.data.name);
 
-    alert("Register success");
+    alert("Register success 🎉");
+    navigate("/");
+
   } catch (err) {
-    alert("Register failed");
+    console.error(err);
+    setError("Registration failed");
   }
 };
 

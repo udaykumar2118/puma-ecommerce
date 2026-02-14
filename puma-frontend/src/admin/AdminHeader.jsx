@@ -8,8 +8,7 @@ export default function AdminHeader() {
     if (!window.confirm("Logout from admin panel?")) return;
 
     localStorage.clear();
-    navigate("/api/admin/login");
-  };
+navigate("/admin/login");  };
 
   return (
     <div className="flex justify-between items-center mb-10">

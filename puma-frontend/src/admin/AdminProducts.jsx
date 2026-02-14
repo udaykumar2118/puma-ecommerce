@@ -20,7 +20,7 @@ export default function AdminProducts() {
   useEffect(() => { loadProducts(); }, []);
 
   const loadProducts = async () => {
-    const res = await api.get("/products");
+    const res = await api.get("/api/products");
     setProducts(res.data);
   };
 
@@ -41,9 +41,9 @@ export default function AdminProducts() {
 
   const saveProduct = async () => {
     if (editing)
-      await api.put(`/admin/products/${editing}`, form);
+      await api.put(`/api/admin/products/${editing}`, form);
     else
-      await api.post("/admin/products", form);
+      await api.post("/api/admin/products", form);
 
     setOpenModal(false);
     loadProducts();
@@ -51,7 +51,7 @@ export default function AdminProducts() {
 
   const deleteProduct = async id => {
     if (!confirm("Delete product?")) return;
-    await api.delete(`/admin/products/${id}`);
+    await api.delete(`/api/admin/products/${id}`);
     loadProducts();
   };
 
