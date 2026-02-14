@@ -23,7 +23,6 @@ export default function AdminDashboard() {
     loadAllData();
   }, []);
 
-  // ================= LOAD EVERYTHING =================
   const loadAllData = async () => {
     try {
       await Promise.all([
@@ -37,7 +36,6 @@ export default function AdminDashboard() {
     }
   };
 
-  // ================= KPI DATA =================
   const loadStats = async () => {
     const [ordersRes, revenueRes, pendingRes, deliveredRes] =
       await Promise.all([
@@ -55,7 +53,6 @@ export default function AdminDashboard() {
     });
   };
 
-  // ================= MONTHLY ANALYTICS =================
   const loadMonthlyAnalytics = async () => {
     const requests = [];
 
