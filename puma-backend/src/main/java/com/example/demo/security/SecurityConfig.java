@@ -44,20 +44,16 @@ public class SecurityConfig {
 
             .authorizeHttpRequests(auth -> auth
 
-            	    // 🌍 PUBLIC APIs
             	    .requestMatchers("/", "/api/auth/**").permitAll()
             	    .requestMatchers("/api/products/**").permitAll()
             	    .requestMatchers("/api/categories/**").permitAll()
 
-            	    // 🔐 USER APIs
-            	    .requestMatchers("/api/cart/**").authenticated()
-            	    .requestMatchers("/api/wishlist/**").authenticated()
-            	    .requestMatchers("/api/orders/**").authenticated()
-            	    .requestMatchers("/api/payments/**").authenticated()  // ⭐ FIXED
+            	    .requestMatchers("/api/cart/**").hasAnyRole("USER","ADMIN")
+            	    .requestMatchers("/api/wishlist/**").hasAnyRole("USER","ADMIN")
+            	    .requestMatchers("/api/orders/**").hasAnyRole("USER","ADMIN")
+            	    .requestMatchers("/api/payments/**").hasAnyRole("USER","ADMIN")
 
-            	    // swagger
             	    .requestMatchers("/v3/api-docs/**","/swagger-ui/**").permitAll()
-
             	    .anyRequest().authenticated()
             	)
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
