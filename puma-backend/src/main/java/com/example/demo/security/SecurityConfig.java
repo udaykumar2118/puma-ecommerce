@@ -44,23 +44,22 @@ public class SecurityConfig {
 
             .authorizeHttpRequests(auth -> auth
 
-                // 🌍 PUBLIC APIs
-                .requestMatchers("/", "/api/auth/**").permitAll()
-                .requestMatchers("/api/products/**").permitAll()
-                .requestMatchers("/api/categories/**").permitAll()
-                .requestMatchers("/api/payment/**").permitAll()
+            	    // 🌍 PUBLIC APIs
+            	    .requestMatchers("/", "/api/auth/**").permitAll()
+            	    .requestMatchers("/api/products/**").permitAll()
+            	    .requestMatchers("/api/categories/**").permitAll()
 
-                // 🔐 USER APIs (LOGIN REQUIRED)
-                .requestMatchers("/api/cart/**").authenticated()
-                .requestMatchers("/api/wishlist/**").authenticated()
-                .requestMatchers("/api/orders/**").authenticated()
+            	    // 🔐 USER APIs
+            	    .requestMatchers("/api/cart/**").authenticated()
+            	    .requestMatchers("/api/wishlist/**").authenticated()
+            	    .requestMatchers("/api/orders/**").authenticated()
+            	    .requestMatchers("/api/payments/**").authenticated()  // ⭐ FIXED
 
-                // swagger
-                .requestMatchers("/v3/api-docs/**","/swagger-ui/**").permitAll()
+            	    // swagger
+            	    .requestMatchers("/v3/api-docs/**","/swagger-ui/**").permitAll()
 
-                .anyRequest().authenticated()
-            )
-
+            	    .anyRequest().authenticated()
+            	)
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
