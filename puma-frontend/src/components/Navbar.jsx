@@ -163,10 +163,6 @@ export default function Navbar() {
 
                 {isLoggedIn && (
                   <>
-                    <p onClick={()=>navigate("/account")} className="cursor-pointer hover:text-gray-500 font-semibold">
-                      My Profile
-                    </p>
-
                     <p onClick={()=>navigate("/orders")} className="cursor-pointer hover:text-gray-500">
                       My Orders
                     </p>
