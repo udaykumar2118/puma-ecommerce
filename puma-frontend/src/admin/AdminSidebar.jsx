@@ -44,6 +44,32 @@ export default function AdminSidebar() {
           Revenue
         </NavLink>
 
+        {/* ⭐ INVENTORY SECTION */}
+        <div className="pt-6 mt-6 border-t border-white/10 text-sm text-gray-400 px-3">
+          INVENTORY
+        </div>
+
+        <NavLink to="/admin/add-stock"
+          className={({isActive}) =>
+            `${link} ${isActive ? active : "hover:bg-white/10 hover:pl-7 transition-all duration-300"}`
+          }>
+          Add Stock
+        </NavLink>
+
+        <NavLink to="/admin/low-stock"
+          className={({isActive}) =>
+            `${link} ${isActive ? active : "hover:bg-white/10 hover:pl-7 transition-all duration-300"}`
+          }>
+          Low Stock
+        </NavLink>
+
+        <NavLink to="/admin/inventory-history"
+          className={({isActive}) =>
+            `${link} ${isActive ? active : "hover:bg-white/10 hover:pl-7 transition-all duration-300"}`
+          }>
+          Inventory History
+        </NavLink>
+
       </nav>
     </div>
   );

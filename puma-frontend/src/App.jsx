@@ -21,6 +21,9 @@ import AdminLogin from "./admin/AdminLogin";
 import AdminRevenue from "./admin/AdminRevenue";
 import AdminGuard from "./admin/AdminGuard";
 import AdminLayout from "./admin/AdminLayout";
+import AdminAddStock from "./admin/AdminAddStock";
+import AdminLowStock from "./admin/AdminLowStock";
+import AdminInventoryHistory from "./admin/AdminInventoryHistory";
 
 // LAYOUT
 import UserLayout from "./layouts/UserLayout";
@@ -45,10 +48,10 @@ function App() {
         <Route path="/search" element={<UserLayout><SearchResults/></UserLayout>} />
         <Route path="/sale" element={<UserLayout><Sale/></UserLayout>} />
 
-        {/* ================= ADMIN LOGIN ================= */}
+        {/*  ADMIN LOGIN  */}
         <Route path="/admin/login" element={<AdminLogin />} />
 
-        {/* ================= ADMIN PANEL ================= */}
+        {/*  ADMIN PANEL  */}
         <Route
           path="/admin"
           element={
@@ -83,6 +86,40 @@ function App() {
               <AdminLayout><AdminRevenue/></AdminLayout>
             </AdminGuard>
           }
+        />
+
+        <Route
+          path="/admin/add-stock"
+          element={
+            <AdminGuard>
+              <AdminLayout><AdminAddStock/></AdminLayout>
+            </AdminGuard>
+          }
+        />
+
+        <Route
+          path="/admin/low-stock"
+          element={
+            <AdminGuard>
+              <AdminLayout><AdminLowStock/></AdminLayout>
+            </AdminGuard>
+          }
+        />
+
+        <Route
+          path="/admin/inventory-history"
+          element={
+            <AdminGuard>
+              <AdminLayout><AdminInventoryHistory/></AdminLayout>
+            </AdminGuard>
+          }
+        />
+
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
         />
 
       </Routes>
