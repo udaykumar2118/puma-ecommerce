@@ -22,7 +22,9 @@ public class AdminController {
         this.inventoryService = inventoryService;
     }
 
-    // ================= PRODUCT MANAGEMENT =================
+    // =========================================================
+    // 🛍 PRODUCT MANAGEMENT
+    // =========================================================
 
     @PostMapping("/products")
     public Product addProduct(@RequestBody Product product) {
@@ -40,18 +42,9 @@ public class AdminController {
         productService.deleteProduct(id);
     }
 
-    // ⭐ SET MINIMUM STOCK LEVEL
-    @PutMapping("/inventory/min-level")
-    public Product updateMinStock(
-            @RequestParam Long productId,
-            @RequestParam int minLevel) {
-
-        Product product = productService.getProductById(productId);
-        product.setMinStockLevel(minLevel);
-        return productService.addProduct(product);
-    }
-
-    // ================= ORDER MANAGEMENT =================
+    // =========================================================
+    // 📦 ORDER MANAGEMENT
+    // =========================================================
 
     @GetMapping("/orders")
     public List<Order> getAllOrders() {
@@ -64,9 +57,9 @@ public class AdminController {
         return orderService.updateOrderStatus(orderId, status);
     }
 
-    // =====================================================
-    // ⭐⭐⭐ INVENTORY APIs ⭐⭐⭐
-    // =====================================================
+    // =========================================================
+    // 📦📦📦 INVENTORY MANAGEMENT
+    // =========================================================
 
     // ➕ Add stock (Purchase entry)
     @PostMapping("/inventory/add-stock")
@@ -76,7 +69,7 @@ public class AdminController {
         return inventoryService.addStock(productId, quantity, note);
     }
 
-    // ⚙️ Manual adjustment (+ / -)
+    // ⚙️ Manual stock adjustment (+ / -)
     @PostMapping("/inventory/adjust-stock")
     public Product adjustStock(@RequestParam Long productId,
                                @RequestParam int quantity,
@@ -84,7 +77,14 @@ public class AdminController {
         return inventoryService.adjustStock(productId, quantity, note);
     }
 
-    // 📉 Low stock products
+    // ⭐ Set minimum stock level
+    @PutMapping("/inventory/min-level")
+    public Product setMinStock(@RequestParam Long productId,
+                               @RequestParam Integer minLevel) {
+        return inventoryService.setMinStockLevel(productId, minLevel);
+    }
+
+    // 📉 Get low stock products
     @GetMapping("/inventory/low-stock")
     public List<Product> lowStockProducts() {
         return inventoryService.getLowStockProducts();
