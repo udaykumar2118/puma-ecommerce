@@ -50,7 +50,7 @@ export default function Navbar() {
   // ================= EFFECT =================
   useEffect(() => {
 
-    // 🔥 Auto logout if token expired
+    // 🔥 AUTO LOGOUT IF TOKEN EXPIRED
     if (token && isTokenExpired()) {
       logout();
       return;
@@ -81,10 +81,7 @@ export default function Navbar() {
 
   // ================= REQUIRE LOGIN =================
   const requireLogin = (path) => {
-    if (!isLoggedIn) {
-      alert("Please login first 🔐");
-      return navigate("/login");
-    }
+    if (!isLoggedIn) return navigate("/login");
     navigate(path);
   };
 
@@ -93,7 +90,7 @@ export default function Navbar() {
     localStorage.clear();
     setCartCount(0);
     setWishlistCount(0);
-    navigate("/login");
+    navigate("/");
   };
 
   return (
@@ -107,7 +104,7 @@ export default function Navbar() {
         text-white px-6 lg:px-12 py-4 flex justify-between items-center`}>
 
         {/* LOGO */}
-        <Link to="/" className="text-3xl font-extrabold tracking-widest">
+        <Link to="/" className="text-3xl font-extrabold tracking-widest hover:opacity-80">
           PUMA
         </Link>
 
@@ -121,29 +118,34 @@ export default function Navbar() {
               <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-white group-hover:w-full transition-all duration-300"/>
             </li>
           ))}
+          <li onClick={() => navigate("/sale")}
+              className="cursor-pointer text-red-500 relative group">
+            SALE
+            <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-red-500 group-hover:w-full transition-all duration-300"/>
+          </li>
         </ul>
 
-        {/* RIGHT ICONS */}
+        {/* RIGHT SIDE ICONS */}
         <div className="flex items-center gap-8">
 
-          {/* ⭐ SHOW ONLY IF LOGGED IN */}
+          {/* ⭐ SHOW ICONS ONLY WHEN LOGGED IN */}
           {isLoggedIn && (
             <>
               {/* WISHLIST */}
-              <button onClick={()=>requireLogin("/wishlist")} className="relative">
+              <button onClick={()=>requireLogin("/wishlist")} className="relative hover:scale-110 transition">
                 <span className="text-2xl">♡</span>
                 {wishlistCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-red-600 text-xs px-2 rounded-full">
+                  <span className="absolute -top-2 -right-2 bg-red-600 text-xs px-2 rounded-full animate-pulse">
                     {wishlistCount}
                   </span>
                 )}
               </button>
 
               {/* CART */}
-              <button onClick={()=>requireLogin("/cart")} className="relative">
+              <button onClick={()=>requireLogin("/cart")} className="relative hover:scale-110 transition">
                 <span className="text-2xl">🛒</span>
                 {cartCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-red-600 text-xs px-2 rounded-full">
+                  <span className="absolute -top-2 -right-2 bg-red-600 text-xs px-2 rounded-full animate-pulse">
                     {cartCount}
                   </span>
                 )}
@@ -151,19 +153,34 @@ export default function Navbar() {
             </>
           )}
 
-          {/* ACCOUNT */}
+          {/* ACCOUNT DROPDOWN */}
           <div className="relative" ref={dropdownRef}>
-            <button onClick={() => setProfileOpen(!profileOpen)}>
-              {!isLoggedIn ? "Login" : `Hi, ${userName}`}
+            <button onClick={() => setProfileOpen(!profileOpen)} className="text-left leading-tight hover:opacity-80">
+              {!isLoggedIn ? (
+                <>
+                  <p className="text-xs">Hello, Sign in</p>
+                  <p className="font-bold text-sm">Account & Lists</p>
+                </>
+              ) : (
+                <>
+                  <p className="text-xs">Hello, {userName}</p>
+                  <p className="font-bold text-sm">Account & Lists</p>
+                </>
+              )}
             </button>
 
             {profileOpen && isLoggedIn && (
-              <div className="absolute right-0 mt-4 w-40 bg-white text-black rounded-xl shadow-xl p-4">
+              <div className="absolute right-0 mt-4 w-56 bg-white text-black rounded-xl shadow-xl p-4 space-y-3">
+                <p onClick={()=>navigate("/orders")} className="cursor-pointer hover:text-gray-500">
+                  My Orders
+                </p>
+                <hr/>
                 <p onClick={logout} className="cursor-pointer text-red-500">
                   Logout
                 </p>
               </div>
             )}
+
           </div>
 
         </div>
