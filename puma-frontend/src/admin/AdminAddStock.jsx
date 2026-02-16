@@ -7,31 +7,53 @@ export default function AdminAddStock() {
   const [selected, setSelected] = useState(null);
   const [qty, setQty] = useState("");
   const [note, setNote] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => { loadProducts(); }, []);
 
   const loadProducts = async () => {
-    const res = await api.get("/api/products");
-    setProducts(res.data);
+    try {
+      const res = await api.get("/api/products");
+      setProducts(res.data);
+    } catch {
+      alert("Failed to load products");
+    }
   };
 
   const addStock = async () => {
-    if (!selected || !qty) return alert("Fill all fields");
+    if (!selected) return alert("Please select product");
+    if (!qty || qty <= 0) return alert("Enter valid quantity");
 
-    await api.post(
-      `/api/admin/inventory/add-stock?productId=${selected.id}&quantity=${qty}&note=${note}`
-    );
+    try {
+      setLoading(true);
 
-    alert("Stock added successfully ✅");
-    setQty(""); setNote("");
-    loadProducts();
+      await api.post(
+        `/api/admin/inventory/add-stock?productId=${selected.id}&quantity=${Number(qty)}&note=${note || "Stock purchase"}`
+      );
+
+      alert("Stock added successfully ✅");
+
+      // ⭐ RESET FORM
+      setQty("");
+      setNote("");
+      setSelected(null);
+
+      // ⭐ REFRESH PRODUCT LIST (important)
+      loadProducts();
+
+    } catch (err) {
+      console.error(err);
+      alert("Failed to add stock");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div>
-      <h1 className="text-4xl font-bold mb-8">Inventory Purchase</h1>
+      <h1 className="text-4xl font-bold mb-10">Inventory Purchase</h1>
 
-      <div className="grid grid-cols-2 gap-10">
+      <div className="grid md:grid-cols-2 gap-10">
 
         {/* PRODUCT LIST */}
         <div className="bg-white/10 backdrop-blur-md p-6 rounded-xl border border-white/20">
@@ -43,7 +65,9 @@ export default function AdminAddStock() {
                 key={p.id}
                 onClick={()=>setSelected(p)}
                 className={`flex items-center gap-4 p-3 rounded-lg cursor-pointer transition
-                  ${selected?.id===p.id ? "bg-green-600" : "hover:bg-white/10"}`}
+                  ${selected?.id===p.id
+                    ? "bg-green-600"
+                    : "hover:bg-white/10"}`}
               >
                 <img src={p.imageUrl} className="w-14 h-14 object-contain"/>
                 <div>
@@ -65,11 +89,14 @@ export default function AdminAddStock() {
           {selected && (
             <div className="mb-6">
               <p className="text-lg font-semibold">{selected.name}</p>
-              <p className="text-gray-400">Current stock: {selected.stock}</p>
+              <p className="text-gray-400">
+                Current stock: {selected.stock}
+              </p>
             </div>
           )}
 
           <input
+            type="number"
             placeholder="Quantity purchased"
             className="input mb-4"
             value={qty}
@@ -84,10 +111,11 @@ export default function AdminAddStock() {
           />
 
           <button
+            disabled={loading}
             onClick={addStock}
-            className="bg-green-600 hover:bg-green-500 px-6 py-3 rounded-xl w-full text-lg font-semibold"
+            className="bg-green-600 hover:bg-green-500 px-6 py-3 rounded-xl w-full text-lg font-semibold disabled:opacity-50"
           >
-            Add Stock
+            {loading ? "Adding..." : "Add Stock"}
           </button>
 
         </div>
