@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import api from "../services/api";
+import { jwtDecode } from "jwt-decode";
 
 export default function Navbar() {
 
@@ -12,36 +13,49 @@ export default function Navbar() {
   const dropdownRef = useRef();
   const navigate = useNavigate();
 
-  // ⭐ JWT BASED LOGIN CHECK
+  // ================= JWT CHECK =================
   const token = localStorage.getItem("token");
-  const role = localStorage.getItem("role");
-  const userName = localStorage.getItem("name");   // ⭐ FIXED
-  const isLoggedIn = !!token;
+  const userName = localStorage.getItem("name");
 
-  // ================= CART COUNT (JWT) =================
+  const isTokenExpired = () => {
+    if (!token) return true;
+    try {
+      const decoded = jwtDecode(token);
+      return decoded.exp < Date.now() / 1000;
+    } catch {
+      return true;
+    }
+  };
+
+  const isLoggedIn = token && !isTokenExpired();
+
+  // ================= CART COUNT =================
   const loadCartCount = () => {
-    if (!token) return;
+    if (!isLoggedIn) return;
 
-    api.get("/api/cart/my", {   // ⭐ FIXED URL
-      headers: { Authorization: `Bearer ${token}` }
-    })
+    api.get("/api/cart/my")
       .then(res => setCartCount(res.data?.items?.length || 0))
       .catch(() => setCartCount(0));
   };
 
-  // ================= WISHLIST COUNT (JWT) =================
+  // ================= WISHLIST COUNT =================
   const loadWishlistCount = () => {
-    if (!token) return;
+    if (!isLoggedIn) return;
 
-    api.get("/api/wishlist/my", {   // ⭐ FIXED URL
-      headers: { Authorization: `Bearer ${token}` }
-    })
+    api.get("/api/wishlist/my")
       .then(res => setWishlistCount(res.data.length || 0))
       .catch(() => setWishlistCount(0));
   };
 
   // ================= EFFECT =================
   useEffect(() => {
+
+    // 🔥 Auto logout if token expired
+    if (token && isTokenExpired()) {
+      logout();
+      return;
+    }
+
     loadCartCount();
     loadWishlistCount();
 
@@ -67,16 +81,19 @@ export default function Navbar() {
 
   // ================= REQUIRE LOGIN =================
   const requireLogin = (path) => {
-    if (!isLoggedIn) return navigate("/login");
+    if (!isLoggedIn) {
+      alert("Please login first 🔐");
+      return navigate("/login");
+    }
     navigate(path);
   };
 
   // ================= LOGOUT =================
   const logout = () => {
     localStorage.clear();
-    window.dispatchEvent(new Event("cartUpdated"));
-    window.dispatchEvent(new Event("wishlistUpdated"));
-    navigate("/");
+    setCartCount(0);
+    setWishlistCount(0);
+    navigate("/login");
   };
 
   return (
@@ -90,7 +107,7 @@ export default function Navbar() {
         text-white px-6 lg:px-12 py-4 flex justify-between items-center`}>
 
         {/* LOGO */}
-        <Link to="/" className="text-3xl font-extrabold tracking-widest hover:opacity-80">
+        <Link to="/" className="text-3xl font-extrabold tracking-widest">
           PUMA
         </Link>
 
@@ -104,77 +121,47 @@ export default function Navbar() {
               <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-white group-hover:w-full transition-all duration-300"/>
             </li>
           ))}
-          <li onClick={() => navigate("/sale")}
-              className="cursor-pointer text-red-500 relative group">
-            SALE
-            <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-red-500 group-hover:w-full transition-all duration-300"/>
-          </li>
         </ul>
 
-        {/* RIGHT SIDE ICONS */}
+        {/* RIGHT ICONS */}
         <div className="flex items-center gap-8">
 
-          {/* WISHLIST */}
-          <button onClick={()=>requireLogin("/wishlist")} className="relative hover:scale-110 transition">
-            <span className="text-2xl">♡</span>
-            {wishlistCount > 0 && (
-              <span className="absolute -top-2 -right-2 bg-red-600 text-xs px-2 rounded-full animate-pulse">
-                {wishlistCount}
-              </span>
-            )}
-          </button>
+          {/* ⭐ SHOW ONLY IF LOGGED IN */}
+          {isLoggedIn && (
+            <>
+              {/* WISHLIST */}
+              <button onClick={()=>requireLogin("/wishlist")} className="relative">
+                <span className="text-2xl">♡</span>
+                {wishlistCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-600 text-xs px-2 rounded-full">
+                    {wishlistCount}
+                  </span>
+                )}
+              </button>
 
-          {/* CART */}
-          <button onClick={()=>requireLogin("/cart")} className="relative hover:scale-110 transition">
-            <span className="text-2xl">🛒</span>
-            {cartCount > 0 && (
-              <span className="absolute -top-2 -right-2 bg-red-600 text-xs px-2 rounded-full animate-pulse">
-                {cartCount}
-              </span>
-            )}
-          </button>
+              {/* CART */}
+              <button onClick={()=>requireLogin("/cart")} className="relative">
+                <span className="text-2xl">🛒</span>
+                {cartCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-600 text-xs px-2 rounded-full">
+                    {cartCount}
+                  </span>
+                )}
+              </button>
+            </>
+          )}
 
-          {/* ACCOUNT DROPDOWN */}
+          {/* ACCOUNT */}
           <div className="relative" ref={dropdownRef}>
-            <button onClick={() => setProfileOpen(!profileOpen)} className="text-left leading-tight hover:opacity-80">
-              {!isLoggedIn ? (
-                <>
-                  <p className="text-xs">Hello, Sign in</p>
-                  <p className="font-bold text-sm">Account & Lists</p>
-                </>
-              ) : (
-                <>
-                  <p className="text-xs">Hello, {userName}</p>
-                  <p className="font-bold text-sm">Account & Lists</p>
-                </>
-              )}
+            <button onClick={() => setProfileOpen(!profileOpen)}>
+              {!isLoggedIn ? "Login" : `Hi, ${userName}`}
             </button>
 
-            {profileOpen && (
-              <div className="absolute right-0 mt-4 w-56 bg-white text-black rounded-xl shadow-xl p-4 space-y-3">
-
-                {!isLoggedIn && (
-                  <button
-                    onClick={()=>navigate("/login")}
-                    className="w-full bg-black text-white py-2 rounded hover:bg-gray-800">
-                    Sign In
-                  </button>
-                )}
-
-                {isLoggedIn && (
-                  <>
-                    <p onClick={()=>navigate("/orders")} className="cursor-pointer hover:text-gray-500">
-                      My Orders
-                    </p>
-
-                    <hr/>
-
-                    <p onClick={logout} className="cursor-pointer text-red-500">
-                      Logout
-                    </p>
-                  </>
-                )}
-
+            {profileOpen && isLoggedIn && (
+              <div className="absolute right-0 mt-4 w-40 bg-white text-black rounded-xl shadow-xl p-4">
+                <p onClick={logout} className="cursor-pointer text-red-500">
+                  Logout
+                </p>
               </div>
             )}
           </div>
