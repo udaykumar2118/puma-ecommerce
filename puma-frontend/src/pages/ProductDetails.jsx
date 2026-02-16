@@ -10,145 +10,150 @@ export default function ProductDetails() {
   const [qty, setQty] = useState(1);
   const [loading, setLoading] = useState(true);
 
-  // 🔥 LOAD PRODUCT
   useEffect(() => {
     api.get(`/api/products/${id}`)
       .then(res => {
         setProduct(res.data);
         setLoading(false);
       })
-      .catch(err => {
-        console.error(err);
-        alert("Product not found");
-        navigate("/");
-      });
+      .catch(() => navigate("/"));
   }, [id]);
 
-  // ⭐ STOCK STATES
-  const isOutOfStock = product && product.stock === 0;
-  const lowStock = product && product.stock > 0 && product.stock <= 5;
+  if (loading) return <div className="p-20 text-center text-xl">Loading...</div>;
 
-  // ================= ADD TO CART =================
+  const isOutOfStock = product.stock === 0;
+  const lowStock = product.stock > 0 && product.stock <= 5;
+
+  // ================= CART =================
   const addToCart = async () => {
     const token = localStorage.getItem("token");
+    if (!token) return navigate("/login");
 
-    if (!token) {
-      alert("Login first");
-      navigate("/login");
-      return;
-    }
+    await api.post(
+      `/api/cart/add?productId=${id}&quantity=${qty}`,
+      {},
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
 
-    try {
-      await api.post(
-        `/api/cart/add?productId=${id}&quantity=${qty}`,
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-
-      // ⭐ navbar cart auto update
-      window.dispatchEvent(new Event("cartUpdated"));
-      alert("Added to cart 🛒");
-
-    } catch (err) {
-      console.error(err);
-      alert("Cart error! ⚠️");
-    }
+    window.dispatchEvent(new Event("cartUpdated"));
+    alert("Added to cart 🛒");
   };
 
-  // ================= ADD TO WISHLIST =================
+  // ================= WISHLIST =================
   const addToWishlist = async () => {
     const token = localStorage.getItem("token");
+    if (!token) return navigate("/login");
 
-    if (!token) {
-      alert("Login first");
-      navigate("/login");
-      return;
-    }
+    await api.post(
+      `/api/wishlist/add?productId=${id}`,
+      {},
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
 
-    try {
-      await api.post(
-        `/api/wishlist/add?productId=${id}`,
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      alert("Added to wishlist ❤️");
-
-    } catch {
-      alert("Already in wishlist ❤️");
-    }
+    alert("Added to wishlist ❤️");
   };
 
-  if (loading) return <p className="p-10">Loading...</p>;
-
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-12 px-8 md:px-20 py-12">
+    <div className="bg-white min-h-screen">
 
-      {/* IMAGE */}
-      <div className="bg-gray-100 p-10 rounded-xl shadow">
-        <img
-          src={product.imageUrl}
-          alt={product.name}
-          className="w-full h-[420px] object-contain hover:scale-105 transition"
-        />
+      {/* ================= BREADCRUMB ================= */}
+      <div className="px-8 md:px-20 py-6 text-sm text-gray-500">
+        Home / {product.category?.name || "Products"} / 
+        <span className="text-black font-semibold"> {product.name}</span>
       </div>
 
-      {/* DETAILS */}
-      <div>
-        <h1 className="text-4xl font-bold mb-3">{product.name}</h1>
-        <p className="text-3xl font-semibold mb-2">₹{product.price}</p>
+      {/* ================= MAIN ================= */}
+      <div className="grid md:grid-cols-2 gap-16 px-8 md:px-20 pb-20">
 
-        {/* ⭐ STOCK WARNINGS */}
-        {isOutOfStock && (
-          <p className="text-red-600 font-semibold mb-2">
-            Out of Stock ❌
-          </p>
-        )}
-
-        {lowStock && (
-          <p className="text-orange-600 font-semibold mb-2">
-            Only {product.stock} left in stock 🔥
-          </p>
-        )}
-
-        <p className="text-gray-600 mb-8">{product.description}</p>
-
-        {/* QUANTITY */}
-        <div className="flex items-center gap-4 mb-8">
-          <span className="font-semibold text-lg">Quantity</span>
-
-          <input
-            type="number"
-            min="1"
-            max={product.stock}
-            value={qty}
-            onChange={(e) =>
-              setQty(Math.min(product.stock, Math.max(1, e.target.value)))
-            }
-            className="border px-4 py-2 w-24 rounded"
+        {/* IMAGE SECTION */}
+        <div className="bg-gray-100 p-16 rounded-2xl shadow-sm">
+          <img
+            src={product.imageUrl}
+            alt={product.name}
+            className="w-full h-[480px] object-contain hover:scale-105 transition duration-500"
           />
         </div>
 
-        {/* BUTTONS */}
-        <div className="flex gap-4">
+        {/* BUY BOX */}
+        <div className="space-y-6">
 
-          <button
-            disabled={isOutOfStock}
-            onClick={addToCart}
-            className={`px-10 py-4 font-semibold transition
-              ${isOutOfStock
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-black text-white hover:bg-gray-800"}
-            `}
-          >
-            {isOutOfStock ? "OUT OF STOCK" : "ADD TO CART"}
-          </button>
+          <div>
+            <p className="text-gray-500 uppercase tracking-widest text-sm">
+              {product.brand || "PUMA"}
+            </p>
 
-          <button
-            onClick={addToWishlist}
-            className="border border-black px-8 py-4 hover:bg-black hover:text-white"
-          >
-            ♡ WISHLIST
-          </button>
+            <h1 className="text-4xl font-extrabold mt-1">
+              {product.name}
+            </h1>
+
+            <p className="text-3xl font-bold mt-3">
+              ₹{product.price}
+            </p>
+          </div>
+
+          {/* STOCK WARNINGS */}
+          {isOutOfStock && (
+            <p className="text-red-600 font-semibold text-lg">
+              Out of Stock ❌
+            </p>
+          )}
+
+          {lowStock && (
+            <p className="text-orange-600 font-semibold text-lg">
+              Only {product.stock} left in stock 🔥
+            </p>
+          )}
+
+          {/* DESCRIPTION */}
+          <p className="text-gray-600 leading-relaxed">
+            {product.description}
+          </p>
+
+          {/* QUANTITY */}
+          <div>
+            <p className="font-semibold mb-2">Quantity</p>
+            <input
+              type="number"
+              min="1"
+              max={product.stock}
+              value={qty}
+              onChange={(e) =>
+                setQty(Math.min(product.stock, Math.max(1, e.target.value)))
+              }
+              className="border px-4 py-3 w-28 rounded-lg"
+            />
+          </div>
+
+          {/* BUTTONS */}
+          <div className="flex gap-4 pt-4">
+
+            <button
+              disabled={isOutOfStock}
+              onClick={addToCart}
+              className={`px-10 py-4 font-bold tracking-wide transition rounded-lg
+                ${isOutOfStock
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-black text-white hover:bg-gray-800"}
+              `}
+            >
+              {isOutOfStock ? "OUT OF STOCK" : "ADD TO CART"}
+            </button>
+
+            <button
+              onClick={addToWishlist}
+              className="border border-black px-8 py-4 rounded-lg hover:bg-black hover:text-white transition"
+            >
+              ♡ WISHLIST
+            </button>
+
+          </div>
+
+          {/* TRUST BADGES */}
+          <div className="border-t pt-6 mt-6 text-sm text-gray-600 space-y-2">
+            <p>✔ 100% Original Product</p>
+            <p>✔ Free Delivery & Easy Returns</p>
+            <p>✔ Secure Payments</p>
+          </div>
 
         </div>
       </div>

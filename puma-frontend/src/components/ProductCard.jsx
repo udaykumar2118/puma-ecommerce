@@ -3,22 +3,16 @@ import api from "../services/api";
 
 export default function ProductCard({ product }) {
   const navigate = useNavigate();
-
   const token = localStorage.getItem("token");
 
-  // ⭐ STOCK STATES
   const outOfStock = product.stock === 0;
   const lowStock = product.stock > 0 && product.stock <= 5;
-  const onSale = product.price <= 6000; // same logic used in SALE page
+  const onSale = product.price <= 6000;
 
-  // ❤️ ADD TO WISHLIST (FIXED API + TOKEN)
+  // ❤️ WISHLIST
   const addToWishlist = async (e) => {
     e.stopPropagation();
-
-    if (!token) {
-      navigate("/login");
-      return;
-    }
+    if (!token) return navigate("/login");
 
     try {
       await api.post(
@@ -26,80 +20,110 @@ export default function ProductCard({ product }) {
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
-
       window.dispatchEvent(new Event("wishlistUpdated"));
       alert("Added to wishlist ❤️");
-
     } catch {
       alert("Already in wishlist");
     }
+  };
+
+  // 🛒 QUICK ADD TO CART
+  const quickAdd = async (e) => {
+    e.stopPropagation();
+    if (!token) return navigate("/login");
+
+    await api.post(
+      `/api/cart/add?productId=${product.id}&quantity=1`,
+      {},
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    window.dispatchEvent(new Event("cartUpdated"));
+    alert("Added to cart 🛒");
   };
 
   return (
     <div
       onClick={() => navigate(`/product/${product.id}`)}
       className="
-        relative border p-4 rounded-xl cursor-pointer bg-white
-        transition-all duration-300
-        hover:shadow-2xl hover:-translate-y-1 active:scale-95
+        group relative bg-white rounded-2xl p-5 cursor-pointer
+        transition-all duration-500
+        hover:shadow-2xl hover:-translate-y-2
       "
     >
-
       {/* ❤️ Wishlist */}
       <button
         onClick={addToWishlist}
-        className="absolute top-3 right-3 text-xl hover:scale-125 transition"
+        className="absolute top-4 right-4 text-xl opacity-70 hover:opacity-100 hover:scale-125 transition"
       >
         ♡
       </button>
 
-      {/* ⭐ SALE BADGE */}
-      {onSale && (
-        <span className="absolute top-3 left-3 bg-red-600 text-white text-xs px-2 py-1 rounded">
-          SALE
-        </span>
-      )}
+      {/* BADGES */}
+      <div className="absolute top-4 left-4 flex flex-col gap-1 z-10">
+        {onSale && (
+          <span className="bg-red-600 text-white text-xs px-2 py-1 rounded">
+            SALE
+          </span>
+        )}
 
-      {/* ⭐ OUT OF STOCK BADGE */}
-      {outOfStock && (
-        <span className="absolute bottom-20 left-3 bg-black text-white text-xs px-2 py-1 rounded">
-          OUT OF STOCK
-        </span>
-      )}
+        {outOfStock && (
+          <span className="bg-black text-white text-xs px-2 py-1 rounded">
+            OUT OF STOCK
+          </span>
+        )}
 
-      {/* ⭐ LOW STOCK BADGE */}
-      {lowStock && !outOfStock && (
-        <span className="absolute bottom-20 left-3 bg-orange-500 text-white text-xs px-2 py-1 rounded">
-          Only {product.stock} left 🔥
-        </span>
-      )}
+        {lowStock && !outOfStock && (
+          <span className="bg-orange-500 text-white text-xs px-2 py-1 rounded">
+            Only {product.stock} left
+          </span>
+        )}
+      </div>
 
       {/* IMAGE */}
-      <img
-        src={product.imageUrl}
-        alt={product.name}
-        className="w-full h-52 object-contain mb-3"
-      />
+      <div className="h-56 flex items-center justify-center overflow-hidden">
+        <img
+          src={product.imageUrl}
+          alt={product.name}
+          className="
+            h-52 object-contain transition duration-700
+            group-hover:scale-110
+          "
+        />
+      </div>
 
-      {/* NAME */}
-      <h3 className="font-semibold line-clamp-2 min-h-[48px]">
-        {product.name}
-      </h3>
+      {/* INFO */}
+      <div className="mt-4">
+        <p className="text-xs text-gray-500 uppercase tracking-wider">
+          {product.brand || "PUMA"}
+        </p>
 
-      {/* PRICE */}
-      <p className="text-xl font-bold mt-2">₹{product.price}</p>
+        <h3 className="font-semibold mt-1 line-clamp-2 min-h-[48px]">
+          {product.name}
+        </h3>
 
-      {/* ⭐ QUICK VIEW BUTTON */}
-      <button
-        onClick={(e) => {
-          e.stopPropagation();
-          navigate(`/product/${product.id}`);
-        }}
-        className="mt-3 w-full bg-black text-white py-2 rounded-lg hover:bg-gray-800 transition"
-      >
-        View Product
-      </button>
+        <p className="text-2xl font-bold mt-2">₹{product.price}</p>
+      </div>
 
+      {/* HOVER ACTION BAR */}
+      <div className="
+        absolute bottom-0 left-0 right-0 p-4
+        opacity-0 translate-y-6
+        group-hover:opacity-100 group-hover:translate-y-0
+        transition duration-400
+      ">
+        <button
+          onClick={quickAdd}
+          disabled={outOfStock}
+          className={`w-full py-3 rounded-lg font-semibold transition
+            ${outOfStock
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-black text-white hover:bg-gray-800"}
+          `}
+        >
+          {outOfStock ? "Out of stock" : "Add to Cart"}
+        </button>
+      </div>
     </div>
   );
 }
