@@ -18,8 +18,8 @@ public class InvoiceService {
         this.orderRepo = orderRepo;
     }
 
-    // ⭐ CREATE INVOICE AFTER PAYMENT
-    public Invoice createInvoice(Long orderId, String method){
+    // ================= CREATE INVOICE AFTER PAYMENT =================
+    public Invoice createInvoice(Long orderId, String method) {
 
         Order order = orderRepo.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
@@ -34,11 +34,15 @@ public class InvoiceService {
         return invoiceRepo.save(invoice);
     }
 
-    // ⭐ GET INVOICE
-    public Invoice getInvoice(Long orderId){
+    // ================= GET INVOICE =================
+    public Invoice getInvoice(Long orderId) {
+
         Invoice invoice = invoiceRepo.findByOrderId(orderId);
-        if(invoice == null)
+
+        if (invoice == null) {
             throw new RuntimeException("Invoice not found for order " + orderId);
+        }
+
         return invoice;
     }
 }

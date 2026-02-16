@@ -22,12 +22,15 @@ public class Product {
 
     private BigDecimal price;
     private String brand;
+
     private Integer stock;
+
+    @Column(name = "min_stock_level")
+    private Integer minStockLevel = 5;
 
     @Column(name = "image_url")
     private String imageUrl;
 
-    // ❌ stop recursion
     @ManyToOne
     @JoinColumn(name = "category_id")
     @JsonIgnore
@@ -54,6 +57,9 @@ public class Product {
 
     public Integer getStock() { return stock; }
     public void setStock(Integer stock) { this.stock = stock; }
+
+    public Integer getMinStockLevel() { return minStockLevel; }
+    public void setMinStockLevel(Integer minStockLevel) { this.minStockLevel = minStockLevel; }
 
     public String getImageUrl() { return imageUrl; }
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }

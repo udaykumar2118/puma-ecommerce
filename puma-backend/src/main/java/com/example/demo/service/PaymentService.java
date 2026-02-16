@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.*;
+import com.example.demo.repository.OrderItemRepository;
 import com.example.demo.repository.OrderRepository;
 import com.example.demo.repository.PaymentRepository;
 import org.springframework.stereotype.Service;
@@ -12,15 +13,23 @@ public class PaymentService {
     private final OrderRepository orderRepo;
     private final InvoiceService invoiceService;
 
+    // ⭐ NEW DEPENDENCIES
+    private final OrderItemRepository orderItemRepo;
+    private final InventoryService inventoryService;
+
     public PaymentService(PaymentRepository paymentRepo,
                           OrderRepository orderRepo,
-                          InvoiceService invoiceService) {
+                          InvoiceService invoiceService,
+                          OrderItemRepository orderItemRepo,
+                          InventoryService inventoryService) {
         this.paymentRepo = paymentRepo;
         this.orderRepo = orderRepo;
         this.invoiceService = invoiceService;
+        this.orderItemRepo = orderItemRepo;
+        this.inventoryService = inventoryService;
     }
 
-    // VERIFY RAZORPAY PAYMENT
+    // ================= RAZORPAY PAYMENT =================
     public Payment verifyRazorpayPayment(Long orderId,
                                          String razorpayOrderId,
                                          String razorpayPaymentId,
@@ -39,15 +48,26 @@ public class PaymentService {
 
         paymentRepo.save(payment);
 
+        // update order status
         order.setStatus(OrderStatus.PAID);
         orderRepo.save(order);
 
+        // ⭐⭐⭐ INVENTORY LOGIC (NEW)
+        orderItemRepo.findByOrderId(orderId)
+                .forEach(item ->
+                        inventoryService.reduceStock(
+                                item.getProduct(),
+                                item.getQuantity()
+                        )
+                );
+
+        // create invoice
         invoiceService.createInvoice(orderId, "RAZORPAY");
 
         return payment;
     }
 
-    // CASH ON DELIVERY
+    // ================= CASH ON DELIVERY =================
     public Payment confirmCOD(Long orderId) {
 
         Order order = orderRepo.findById(orderId)
@@ -60,9 +80,20 @@ public class PaymentService {
 
         paymentRepo.save(payment);
 
+        // update order status
         order.setStatus(OrderStatus.PLACED);
         orderRepo.save(order);
 
+        // ⭐⭐⭐ INVENTORY LOGIC (NEW)
+        orderItemRepo.findByOrderId(orderId)
+                .forEach(item ->
+                        inventoryService.reduceStock(
+                                item.getProduct(),
+                                item.getQuantity()
+                        )
+                );
+
+        // create invoice
         invoiceService.createInvoice(orderId, "COD");
 
         return payment;
