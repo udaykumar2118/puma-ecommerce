@@ -12,7 +12,7 @@ export default function ProductDetails() {
 
   // 🔥 LOAD PRODUCT
   useEffect(() => {
-    api.get(`/api/products/${id}`)   // ⭐ FIXED
+    api.get(`/api/products/${id}`)
       .then(res => {
         setProduct(res.data);
         setLoading(false);
@@ -23,6 +23,10 @@ export default function ProductDetails() {
         navigate("/");
       });
   }, [id]);
+
+  // ⭐ STOCK STATES
+  const isOutOfStock = product && product.stock === 0;
+  const lowStock = product && product.stock > 0 && product.stock <= 5;
 
   // ================= ADD TO CART =================
   const addToCart = async () => {
@@ -36,11 +40,12 @@ export default function ProductDetails() {
 
     try {
       await api.post(
-        `/api/cart/add?productId=${id}&quantity=${qty}`,  // ⭐ FIXED
+        `/api/cart/add?productId=${id}&quantity=${qty}`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
+      // ⭐ navbar cart auto update
       window.dispatchEvent(new Event("cartUpdated"));
       alert("Added to cart 🛒");
 
@@ -62,7 +67,7 @@ export default function ProductDetails() {
 
     try {
       await api.post(
-        `/api/wishlist/add?productId=${id}`,   // ⭐ FIXED
+        `/api/wishlist/add?productId=${id}`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -78,6 +83,7 @@ export default function ProductDetails() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-12 px-8 md:px-20 py-12">
 
+      {/* IMAGE */}
       <div className="bg-gray-100 p-10 rounded-xl shadow">
         <img
           src={product.imageUrl}
@@ -86,29 +92,55 @@ export default function ProductDetails() {
         />
       </div>
 
+      {/* DETAILS */}
       <div>
         <h1 className="text-4xl font-bold mb-3">{product.name}</h1>
-        <p className="text-3xl font-semibold mb-4">₹{product.price}</p>
+        <p className="text-3xl font-semibold mb-2">₹{product.price}</p>
+
+        {/* ⭐ STOCK WARNINGS */}
+        {isOutOfStock && (
+          <p className="text-red-600 font-semibold mb-2">
+            Out of Stock ❌
+          </p>
+        )}
+
+        {lowStock && (
+          <p className="text-orange-600 font-semibold mb-2">
+            Only {product.stock} left in stock 🔥
+          </p>
+        )}
 
         <p className="text-gray-600 mb-8">{product.description}</p>
 
+        {/* QUANTITY */}
         <div className="flex items-center gap-4 mb-8">
           <span className="font-semibold text-lg">Quantity</span>
+
           <input
             type="number"
             min="1"
+            max={product.stock}
             value={qty}
-            onChange={(e) => setQty(e.target.value)}
+            onChange={(e) =>
+              setQty(Math.min(product.stock, Math.max(1, e.target.value)))
+            }
             className="border px-4 py-2 w-24 rounded"
           />
         </div>
 
+        {/* BUTTONS */}
         <div className="flex gap-4">
+
           <button
+            disabled={isOutOfStock}
             onClick={addToCart}
-            className="bg-black text-white px-10 py-4 font-semibold hover:bg-gray-800"
+            className={`px-10 py-4 font-semibold transition
+              ${isOutOfStock
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-black text-white hover:bg-gray-800"}
+            `}
           >
-            ADD TO CART
+            {isOutOfStock ? "OUT OF STOCK" : "ADD TO CART"}
           </button>
 
           <button
@@ -117,6 +149,7 @@ export default function ProductDetails() {
           >
             ♡ WISHLIST
           </button>
+
         </div>
       </div>
     </div>
