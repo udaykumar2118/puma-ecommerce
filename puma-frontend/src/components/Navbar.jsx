@@ -1,7 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import api from "../services/api";
-import { jwtDecode } from "jwt-decode";
 
 export default function Navbar() {
 
@@ -13,49 +12,36 @@ export default function Navbar() {
   const dropdownRef = useRef();
   const navigate = useNavigate();
 
-  // ================= JWT CHECK =================
+  // ⭐ JWT BASED LOGIN CHECK
   const token = localStorage.getItem("token");
-  const userName = localStorage.getItem("name");
+  const role = localStorage.getItem("role");
+  const userName = localStorage.getItem("name");   // ⭐ FIXED
+  const isLoggedIn = !!token;
 
-  const isTokenExpired = () => {
-    if (!token) return true;
-    try {
-      const decoded = jwtDecode(token);
-      return decoded.exp < Date.now() / 1000;
-    } catch {
-      return true;
-    }
-  };
-
-  const isLoggedIn = token && !isTokenExpired();
-
-  // ================= CART COUNT =================
+  // ================= CART COUNT (JWT) =================
   const loadCartCount = () => {
-    if (!isLoggedIn) return;
+    if (!token) return;
 
-    api.get("/api/cart/my")
+    api.get("/api/cart/my", {   // ⭐ FIXED URL
+      headers: { Authorization: `Bearer ${token}` }
+    })
       .then(res => setCartCount(res.data?.items?.length || 0))
       .catch(() => setCartCount(0));
   };
 
-  // ================= WISHLIST COUNT =================
+  // ================= WISHLIST COUNT (JWT) =================
   const loadWishlistCount = () => {
-    if (!isLoggedIn) return;
+    if (!token) return;
 
-    api.get("/api/wishlist/my")
+    api.get("/api/wishlist/my", {   // ⭐ FIXED URL
+      headers: { Authorization: `Bearer ${token}` }
+    })
       .then(res => setWishlistCount(res.data.length || 0))
       .catch(() => setWishlistCount(0));
   };
 
   // ================= EFFECT =================
   useEffect(() => {
-
-    // 🔥 AUTO LOGOUT IF TOKEN EXPIRED
-    if (token && isTokenExpired()) {
-      logout();
-      return;
-    }
-
     loadCartCount();
     loadWishlistCount();
 
@@ -88,8 +74,8 @@ export default function Navbar() {
   // ================= LOGOUT =================
   const logout = () => {
     localStorage.clear();
-    setCartCount(0);
-    setWishlistCount(0);
+    window.dispatchEvent(new Event("cartUpdated"));
+    window.dispatchEvent(new Event("wishlistUpdated"));
     navigate("/");
   };
 
@@ -128,30 +114,25 @@ export default function Navbar() {
         {/* RIGHT SIDE ICONS */}
         <div className="flex items-center gap-8">
 
-          {/* ⭐ SHOW ICONS ONLY WHEN LOGGED IN */}
-          {isLoggedIn && (
-            <>
-              {/* WISHLIST */}
-              <button onClick={()=>requireLogin("/wishlist")} className="relative hover:scale-110 transition">
-                <span className="text-2xl">♡</span>
-                {wishlistCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-red-600 text-xs px-2 rounded-full animate-pulse">
-                    {wishlistCount}
-                  </span>
-                )}
-              </button>
+          {/* WISHLIST */}
+          <button onClick={()=>requireLogin("/wishlist")} className="relative hover:scale-110 transition">
+            <span className="text-2xl">♡</span>
+            {wishlistCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-600 text-xs px-2 rounded-full animate-pulse">
+                {wishlistCount}
+              </span>
+            )}
+          </button>
 
-              {/* CART */}
-              <button onClick={()=>requireLogin("/cart")} className="relative hover:scale-110 transition">
-                <span className="text-2xl">🛒</span>
-                {cartCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-red-600 text-xs px-2 rounded-full animate-pulse">
-                    {cartCount}
-                  </span>
-                )}
-              </button>
-            </>
-          )}
+          {/* CART */}
+          <button onClick={()=>requireLogin("/cart")} className="relative hover:scale-110 transition">
+            <span className="text-2xl">🛒</span>
+            {cartCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-600 text-xs px-2 rounded-full animate-pulse">
+                {cartCount}
+              </span>
+            )}
+          </button>
 
           {/* ACCOUNT DROPDOWN */}
           <div className="relative" ref={dropdownRef}>
@@ -169,18 +150,33 @@ export default function Navbar() {
               )}
             </button>
 
-            {profileOpen && isLoggedIn && (
+            {profileOpen && (
               <div className="absolute right-0 mt-4 w-56 bg-white text-black rounded-xl shadow-xl p-4 space-y-3">
-                <p onClick={()=>navigate("/orders")} className="cursor-pointer hover:text-gray-500">
-                  My Orders
-                </p>
-                <hr/>
-                <p onClick={logout} className="cursor-pointer text-red-500">
-                  Logout
-                </p>
+
+                {!isLoggedIn && (
+                  <button
+                    onClick={()=>navigate("/login")}
+                    className="w-full bg-black text-white py-2 rounded hover:bg-gray-800">
+                    Sign In
+                  </button>
+                )}
+
+                {isLoggedIn && (
+                  <>
+                    <p onClick={()=>navigate("/orders")} className="cursor-pointer hover:text-gray-500">
+                      My Orders
+                    </p>
+
+                    <hr/>
+
+                    <p onClick={logout} className="cursor-pointer text-red-500">
+                      Logout
+                    </p>
+                  </>
+                )}
+
               </div>
             )}
-
           </div>
 
         </div>
