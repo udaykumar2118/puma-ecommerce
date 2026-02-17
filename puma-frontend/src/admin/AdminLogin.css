@@ -1,121 +1,197 @@
-.admin-wrapper {
-  min-height: 100vh;
-  background: linear-gradient(120deg,#000,#1f2937);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 30px;
-  font-family: 'Poppins', sans-serif;
+/* ===== WRAPPER ===== */
+.admin-wrapper{
+  min-height:100vh;
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  box-sizing:border-box;
 }
 
-.admin-card {
-  width: 1000px;
-  max-width: 95%;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  background: rgba(255,255,255,0.05);
-  backdrop-filter: blur(14px);
-  border-radius: 24px;
-  overflow: hidden;
-  box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+/* ===== MAIN CARD ===== */
+.admin-card{
+  width:1100px;
+  max-width:100%;
+  min-height:600px;
+  display:flex;
+  border-radius:20px;
+  overflow:hidden;
+  backdrop-filter: blur(6px);
+  background: rgba(255,255,255,0.08);
+  box-shadow:0 25px 60px rgba(0,0,0,0.35);
 }
 
-/* LEFT SIDE */
-.admin-left {
-  padding: 60px;
-  color: white;
+/* ===== LEFT PANEL ===== */
+.admin-left{
+  flex:1;
+  padding:60px 50px;
+  color:white;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  background: rgba(0,0,0,0.45);
 }
 
-.admin-left h1 {
-  font-size: 40px;
-  margin-bottom: 20px;
+.admin-left h1{
+  font-size:64px;
+  margin-bottom:20px;
+  letter-spacing:3px;
 }
 
-.admin-left p {
-  opacity: 0.8;
-  line-height: 1.6;
+.admin-left p{
+  font-size:18px;
+  line-height:1.6;
+  margin-bottom:25px;
 }
 
-.badge {
-  display: inline-block;
-  margin-top: 20px;
-  background: #22c55e;
-  padding: 6px 14px;
-  border-radius: 30px;
-  font-size: 13px;
+.badge{
+  display:inline-block;
+  padding:8px 18px;
+  background:#ff0040;
+  border-radius:30px;
+  font-size:14px;
+  margin-bottom:25px;
 }
 
-.features {
-  margin-top: 40px;
-  opacity: 0.8;
+.features p{
+  margin:8px 0;
+  font-size:16px;
 }
 
-.features p {
-  margin-bottom: 10px;
+/* ===== RIGHT PANEL ===== */
+.admin-right{
+  width:420px;
+  background:white;
+  padding:60px 50px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
 }
 
-/* RIGHT SIDE */
-.admin-right {
-  background: white;
-  padding: 60px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+.admin-right h2{
+  font-size:32px;
+  margin-bottom:25px;
 }
 
-.admin-right h2 {
-  font-size: 30px;
-  margin-bottom: 30px;
-  font-weight: 700;
+.admin-right input{
+  width:100%;
+  padding:14px;
+  margin-bottom:15px;
+  border-radius:8px;
+  border:1px solid #ddd;
+  font-size:16px;
 }
 
-/* INPUTS */
-.admin-right input {
-  padding: 14px;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  margin-bottom: 18px;
-  font-size: 15px;
-  transition: all .25s ease;
+.admin-right button{
+  padding:15px;
+  border:none;
+  background:#ff0040;
+  color:white;
+  font-size:16px;
+  border-radius:8px;
+  cursor:pointer;
+  margin-top:10px;
+  transition:0.3s;
 }
 
-.admin-right input:focus {
-  border-color: black;
-  box-shadow: 0 0 0 3px rgba(0,0,0,0.08);
-  outline: none;
+.admin-right button:hover{
+  background:#d60036;
 }
 
-/* BUTTON */
-.admin-right button {
-  padding: 14px;
-  background: linear-gradient(90deg,#000,#111);
-  color: white;
-  border-radius: 12px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.3s;
-  letter-spacing: .5px;
+.error{
+  background:#ffe5e5;
+  color:#d60000;
+  padding:10px;
+  border-radius:6px;
+  margin-bottom:15px;
+  font-size:14px;
 }
 
-.admin-right button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+.secure-note{
+  margin-top:15px;
+  color:#ff0040;
+  font-weight:600;
 }
 
-/* ERROR */
-.error {
-  background: #ffe4e4;
-  color: #c00;
-  padding: 10px;
-  border-radius: 8px;
-  margin-bottom: 15px;
-  font-size: 14px;
+/* ===================================================== */
+/* ================= RESPONSIVE PART ==================== */
+/* ===================================================== */
+
+/* ===== LAPTOP ===== */
+@media(max-width:1200px){
+  .admin-card{
+    width:95%;
+  }
 }
 
-/* FOOT NOTE */
-.secure-note {
-  text-align: center;
-  margin-top: 22px;
-  font-size: 13px;
-  color: gray;
+/* ===== TABLET ===== */
+@media(max-width:900px){
+
+  .admin-card{
+    flex-direction:column;
+    min-height:auto;
+  }
+
+  .admin-left{
+    padding:40px;
+    text-align:center;
+    align-items:center;
+  }
+
+  .admin-left h1{
+    font-size:42px;
+  }
+
+  .admin-right{
+    width:100%;
+    padding:40px;
+  }
+}
+
+/* ===== MOBILE ===== */
+@media(max-width:500px){
+
+  .admin-wrapper{
+    padding:10px;
+  }
+
+  .admin-left{
+    padding:30px 20px;
+  }
+
+  .admin-left h1{
+    font-size:32px;
+  }
+
+  .admin-left p{
+    font-size:15px;
+  }
+
+  .features{
+    display:none; /* mobile alli hide madidre clean look */
+  }
+
+  .admin-right{
+    padding:30px 20px;
+  }
+
+  .admin-right h2{
+    font-size:24px;
+  }
+
+  .admin-right input{
+    padding:12px;
+  }
+
+  .admin-right button{
+    padding:13px;
+  }
+}
+
+/* ===== SMALL MOBILE ===== */
+@media(max-width:350px){
+  .admin-left h1{
+    font-size:26px;
+  }
 }
