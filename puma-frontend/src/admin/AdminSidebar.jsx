@@ -25,7 +25,7 @@ export default function AdminSidebar({ open, setOpen }) {
       `}>
 
         <h1 className="text-2xl font-bold p-6 border-b border-white/10">
-          PUMA Admin
+          Sneaky Admin
         </h1>
 
         <nav className="mt-6 space-y-2 px-3">

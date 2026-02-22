@@ -91,7 +91,7 @@ export default function Navbar() {
 
         {/* LOGO */}
         <Link to="/" className="text-3xl font-extrabold tracking-widest hover:opacity-80">
-          PUMA
+          Sneaky
         </Link>
 
         {/* MENU */}

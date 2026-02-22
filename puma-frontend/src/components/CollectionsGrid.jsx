@@ -43,7 +43,7 @@ export default function CollectionsGrid() {
         <h2 className="text-4xl font-bold tracking-widest">
           TRENDING COLLECTIONS
         </h2>
-        <p className="text-gray-500 mt-2">Discover the latest Puma drops</p>
+        <p className="text-gray-500 mt-2">Discover the latest Sneaky drops</p>
       </div>
 
       {/* GRID */}

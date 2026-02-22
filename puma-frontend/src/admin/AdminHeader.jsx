@@ -15,7 +15,7 @@ export default function AdminHeader() {
 
       {/* TITLE */}
       <h1 className="text-xl md:text-2xl font-bold tracking-wide">
-        PUMA Admin Panel
+        Sneaky Admin Panel
       </h1>
 
       {/* RIGHT PROFILE BOX */}

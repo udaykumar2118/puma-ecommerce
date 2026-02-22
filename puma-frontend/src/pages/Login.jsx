@@ -79,7 +79,7 @@ export default function Login() {
 
         {/* LEFT SIDE */}
         <div className="admin-left" ref={leftRef}>
-          <h1>PUMA</h1>
+          <h1>Sneaky</h1>
           <p>
             Discover the latest collections, track your orders
             and enjoy a seamless shopping experience.

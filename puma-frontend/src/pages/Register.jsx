@@ -12,13 +12,11 @@ export default function Register() {
 
   const navigate = useNavigate();
 
-  // GSAP refs
   const wrapperRef = useRef(null);
   const cardRef = useRef(null);
   const leftRef = useRef(null);
   const rightRef = useRef(null);
 
-  // ================= REGISTER =================
 const handleRegister = async (e) => {
   e.preventDefault();
 
@@ -43,8 +41,6 @@ const handleRegister = async (e) => {
   }
 };
 
-
-  // ================= GSAP ANIMATION =================
   useEffect(() => {
     const ctx = gsap.context(() => {
       gsap.set(cardRef.current, { opacity: 0, scale: 0.95 });
@@ -80,7 +76,7 @@ const handleRegister = async (e) => {
 
         {/* LEFT SIDE */}
         <div className="admin-left" ref={leftRef}>
-          <h1>Join PUMA</h1>
+          <h1>Join Sneaky</h1>
           <p>
             Create your account and enjoy faster checkout,
             order tracking and exclusive member deals.

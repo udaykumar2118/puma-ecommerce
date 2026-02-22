@@ -89,7 +89,7 @@ export default function AdminLogin() {
         
         {/* LEFT SIDE */}
         <div className="admin-left" ref={leftRef}>
-          <h1>PUMA Admin Portal</h1>
+          <h1>Sneaky Admin Portal</h1>
           <p>
             Manage products, orders, users, and revenue analytics from a single
             powerful dashboard.

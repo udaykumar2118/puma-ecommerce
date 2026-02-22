@@ -5,7 +5,7 @@ export default function PromoBanners() {
 
   const promos = [
     {
-      title: "PUMA x McLAREN",
+      title: "Sneaky x McLAREN",
       subtitle: "Inspired by Speed • Built for Performance",
       route: "/category/men",
       image:
